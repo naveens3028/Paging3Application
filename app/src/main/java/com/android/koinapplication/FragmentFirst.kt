@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -13,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.koinapplication.model.ExampleJson2KtKotlin
 import kotlinx.coroutines.flow.collectLatest
 
-class FragmentFirst: Fragment() {
+class FragmentFirst: Fragment() , OnProceedClick{
 
     lateinit var viewModel: MainViewModel
     lateinit var recyclerViewAdapter: UserDataAdapter
@@ -40,7 +42,20 @@ class FragmentFirst: Fragment() {
     }
 
     private fun callAdapter(recyclerPag: RecyclerView) {
-        recyclerViewAdapter = UserDataAdapter()
+        recyclerViewAdapter = UserDataAdapter(this)
         recyclerPag.adapter = recyclerViewAdapter
+    }
+
+    override fun onNextClicked() {
+        val firstFragment = FragmentSecond()
+        // create a FragmentManager
+        val data = Bundle()
+        data.putString("family", "Second")
+        firstFragment.arguments = data
+        val fm: FragmentManager = parentFragmentManager
+        val fragmentTransaction: FragmentTransaction = fm.beginTransaction()
+        fragmentTransaction.replace(R.id.frame_main, firstFragment)
+        fragmentTransaction.addToBackStack("Second")
+        fragmentTransaction.commit() // save the changes
     }
 }

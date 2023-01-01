@@ -1,5 +1,7 @@
 package com.android.koinapplication
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +11,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.koinapplication.model.Data
 
-class UserDataAdapter() :
+class UserDataAdapter(val listener: OnProceedClick) :
     PagingDataAdapter<Data, UserDataAdapter.MyViewHolder>(DiffUtilCallBack()) {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         getItem(position)?.let { holder.bind(it) }
+
+        holder.imageView.setOnClickListener {
+            listener.onNextClicked()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -42,4 +48,8 @@ class UserDataAdapter() :
         }
 
     }
+}
+
+interface OnProceedClick{
+    fun onNextClicked()
 }

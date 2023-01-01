@@ -11,9 +11,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collect
 
 class FragmentSecond : Fragment() {
 
+    lateinit var viewModel: MainViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,7 +29,7 @@ class FragmentSecond : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         val txtView = view.findViewById<TextView>(R.id.txt_frag)
         txtView.text = "Second Fragment"
 
@@ -36,6 +40,14 @@ class FragmentSecond : Fragment() {
         }
 
         navigateFragment(view)
+
+        viewModel.getDataWithFlow()
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.dataFlow.collect{
+                Log.e("AsusFlow", it.toString())
+            }
+        }
     }
 
     private fun navigateFragment(view: View) {
